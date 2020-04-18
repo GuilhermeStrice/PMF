@@ -43,7 +43,7 @@ CREATE TABLE `asset_table` (
 --
 
 INSERT INTO `asset_table` (`id_asset`, `id_package`, `Version`, `SdkVersion`, `Checksum`, `FileName`, `Url`) VALUES
-(1, 1, '0.0.1', '0.0.5', 'asdfasdfasdf', 'asdf.zip', 'http://localhost:3000/packages/stuff/asdfasdf.zip');
+(1, 1, '0.0.1', '0.0.5', 'asdfasdfasdf', 'asdf.zip', 'http://localhost:3000/asdfasdf.zip');
 
 -- --------------------------------------------------------
 
@@ -65,7 +65,7 @@ CREATE TABLE `dependency` (
 --
 
 INSERT INTO `dependency` (`id_dependency`, `id_asset`, `ID`, `Checksum`, `FileName`, `Url`) VALUES
-(1, 1, 'stuff', 'asdfasdf', 'asdfasdf', 'http://localhost:3000/packages/stuff/asdfasdf.zip');
+(1, 1, 'stuff', 'asdfasdf', 'asdfasdf', 'http://localhost:3000/asdfasdf.zip');
 
 -- --------------------------------------------------------
 
