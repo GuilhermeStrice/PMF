@@ -26,7 +26,7 @@ namespace PMF.Managers
             }
             catch (WebException)
             {
-                Console.WriteLine("Couldn't download information from the server");
+                Console.Error.WriteLine("Couldn't download information from the server");
                 return null;
             }
         }

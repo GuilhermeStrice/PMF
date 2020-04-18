@@ -7,7 +7,7 @@ namespace PMF
 {
     public static class Config
     {
-        public static string ManifestFileName = "manifest.json";
+        public static string ManifestFileName { get; set; } = "manifest.json";
 
         public static string PackageInstallationFolder { get; set; }
 
@@ -17,11 +17,6 @@ namespace PMF
 
         public static bool IsDebugging { get; set; }
 
-        public static string TemporaryFolder = ".pmf-temp";
-
-        public static void DEBUG(string message)
-        {
-            Console.WriteLine("DEBUG: " + message);
-        }
+        public static string TemporaryFolder { get; set; } = ".pmf-temp";
     }
 }
