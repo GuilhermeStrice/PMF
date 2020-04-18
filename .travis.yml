@@ -16,8 +16,9 @@ env:
 
 before_install:
   - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-  - sudo npm install -g n
-  - sudo n stable
+  - nvm install 10.14.1
+  - nvm use 10.14.1
+  - npm install
 addons:
   coverity_scan:
     project:
