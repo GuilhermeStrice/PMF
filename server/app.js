@@ -25,10 +25,9 @@ app.get('/package/:id', async (req, res) =>
             for (var i = 0; i < assets.length; i++)
             {
                 var dependencies = await con.query("SELECT ID, Checksum, FileName, Url FROM dependency WHERE id_asset = ?", [assets[i]["id_asset"]])
-                
+
                 // don't need this anymore
                 delete assets[i]["id_asset"]
-                delete assets[i]["meta"]
 
                 assets[i]["Dependencies"] = dependencies
             }
@@ -37,7 +36,7 @@ app.get('/package/:id', async (req, res) =>
         }
     }
 
-    await res.json(package)
+    res.json(package)
 });
 
 app.listen(port, () => console.log(`http://localhost:${port}`));

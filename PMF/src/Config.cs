@@ -7,8 +7,7 @@ namespace PMF
 {
     public static class Config
     {
-        // This is project manifest, not package manifests, those are handled automagically
-        public static string ManifestFileName { get; set; }
+        public static string ManifestFileName = "manifest.json";
 
         public static string PackageInstallationFolder { get; set; }
 
