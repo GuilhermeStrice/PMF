@@ -9,7 +9,7 @@ env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-   - secure: "V5utvnb6ySEuWhU4ru597hBnWNWs8kEkFgzcTWTsJry8eKYZ9/ECqkVu+cGNUKZBNnlZ19q2A1XKwopihdMp9+NG+sYB4HejyKwvrMrMcSCe/1gGP45BFvQWngBeMLdLXVU428cnPOkURfd8VmbiZ7bSrxu5MTdn5Aq1zxTYi17NQSlYEcoWIXFq/RKQ0Ymt0ToUy+rLgVdy0kuHWKyJSUdiplYmFNhjV4OpdXvp3CJO25OumAZjt8ugId4wPG2pZODsq7ZRzXle5fBcV5sRP7cLOGiJPxLNHIUfRoREC/IX3veMEr8wDesZmEs1vksV0cDF2BqQyYKW5UUaIDibuShs1ekmyf/vZGCvrG1k/BZqY83rvOiFNhvNBmg979ql7EgSqE1ahtYeX0zFCYnvMKlhgCm86wyJTXpxKgfRXmt048g2Wy/MrVLLleHa4Btl3Ebij+/gVK5pnOIGmVFS0rTetGX4pDErbx6L7z1uWQ6ZmDMTF3bRypbmoZtTMrmkaMCnwE+zZOZGr42QBtP/Y48nYVHjW7LegBSMJtSlGWRa/qrB2OPrN1H7STm555zRZIlDBzhoih2TjlCYYZtCk3eGz2xEno9uyWBuPAVNghsy3NNN/iHvNjZL0DDV6X2cQdg+/o74gncZbjYV39u+uy3dUP3xw22fw8yjkiu65i4="
+   - secure: ""MnVhh0EzpnnYPYAYCrYU4xjl2oz7BL0BMrKlhW1ZKaOdvTzGNtqacopCYKs6SHfXF2hMmEwC8/Jh7lAXiJJ4B9UYpljW2g/HSd8EmmKVgF6nWFnb+RBRdFmKoDbxC8pAv36dm8YC98VwprctYcUHTt+l4ZH6VBVa+mjS+/fkGhDyYTgu6LF/PakDD6nOeFeJRzmCtfVHtMFULfTQPLn+W+PdV1NjTKRljkY7uVQOSS+PSLi0e5KeN/pKQLH+/pa8wlK24/O0ExvrOhALOiO/E76rcHMnzR5ucrMUGKx5C+zSuUMvIOrLPrWFT8H01YRk90K0b2PrEKY/ehiV1uCUFwNdx2jVcUh2J+c/kE+/WFeKulKCfkZ2s9LuEkzKSSLA3h8MfRtF//z0BwCsessPMm6BT2pKlnMmoTCWSDU3cfEQsnb89RYk+h/2MvLOXIl6sQj0b7cNFZKGO34wJJ4p71fFN62/3YsGAvIxXf578A2oD38LAqgGj+Klsclphyij8xEbvEFDyRMGNMdfJlx/z6yS1TxxL5M/iEP0onAhwc54sRESAJq5SzCM8nkvRobsHttff3AWyoyUVxvJ/LKE1fYRVeg5tDsU+tO71/GdytSXBG90LazUihthRBbEYyolWdGz5gQzgY0UyZAB86GK9uoh9h6EFHvUhHCgXimltfI=""
 
 before_install:
   - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
