@@ -1,6 +1,6 @@
 # PMF - Package Management Framework
 
-[![Build Status](https://travis-ci.com/xX-TheDoctor-Xx/PMF.svg?branch=master)](https://travis-ci.com/xX-TheDoctor-Xx/PMF) [![Build Status](https://travis-ci.com/xX-TheDoctor-Xx/PMF.svg?branch=master)](https://travis-ci.com/xX-TheDoctor-Xx/PMF)
+[![Build Status](https://travis-ci.com/xX-TheDoctor-Xx/PMF.svg?branch=master)](https://travis-ci.com/xX-TheDoctor-Xx/PMF) [![Build Status](https://travis-ci.com/xX-TheDoctor-Xx/PMF.svg?branch=master)](https://travis-ci.com/xX-TheDoctor-Xx/PMF) [![Coverage Status](https://coveralls.io/repos/github/xX-TheDoctor-Xx/PMF/badge.svg?branch=master)](https://coveralls.io/github/xX-TheDoctor-Xx/PMF?branch=master)
 
 PMF is a barebones C# library that provides basic support for package management
 

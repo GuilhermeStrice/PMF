@@ -5,3 +5,21 @@ dist: trusty
 script:
   - dotnet restore
   - dotnet build
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "V5utvnb6ySEuWhU4ru597hBnWNWs8kEkFgzcTWTsJry8eKYZ9/ECqkVu+cGNUKZBNnlZ19q2A1XKwopihdMp9+NG+sYB4HejyKwvrMrMcSCe/1gGP45BFvQWngBeMLdLXVU428cnPOkURfd8VmbiZ7bSrxu5MTdn5Aq1zxTYi17NQSlYEcoWIXFq/RKQ0Ymt0ToUy+rLgVdy0kuHWKyJSUdiplYmFNhjV4OpdXvp3CJO25OumAZjt8ugId4wPG2pZODsq7ZRzXle5fBcV5sRP7cLOGiJPxLNHIUfRoREC/IX3veMEr8wDesZmEs1vksV0cDF2BqQyYKW5UUaIDibuShs1ekmyf/vZGCvrG1k/BZqY83rvOiFNhvNBmg979ql7EgSqE1ahtYeX0zFCYnvMKlhgCm86wyJTXpxKgfRXmt048g2Wy/MrVLLleHa4Btl3Ebij+/gVK5pnOIGmVFS0rTetGX4pDErbx6L7z1uWQ6ZmDMTF3bRypbmoZtTMrmkaMCnwE+zZOZGr42QBtP/Y48nYVHjW7LegBSMJtSlGWRa/qrB2OPrN1H7STm555zRZIlDBzhoih2TjlCYYZtCk3eGz2xEno9uyWBuPAVNghsy3NNN/iHvNjZL0DDV6X2cQdg+/o74gncZbjYV39u+uy3dUP3xw22fw8yjkiu65i4="
+
+before_install:
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+addons:
+  coverity_scan:
+    project:
+      name: "xX-TheDoctor-Xx/PMF"
+      description: "Package Management Framework"
+    notification_email: guilhermesuicida123654@gmail.com
+    build_command_prepend: "donet restore"
+    build_command: "dotnet build"
+    branch_pattern: coverity_scan
