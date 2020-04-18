@@ -14,6 +14,9 @@ environment:
 init:
   # Good practise, because Windows line endings are different from Unix/Linux ones
   - cmd: git config --global core.autocrlf true
+  - cmd: nuget install xunit.runner.console -OutputDirectory packages -Version 2.3.1
+  - cmd: nuget install OpenCover -OutputDirectory packages -Version 4.6.166
+  - cmd: dotnet tool install coveralls.net --version 1.0.0-beta0002 --tool-path tools
 before_build:
   # Display .NET Core version
   - cmd: dotnet --version
@@ -24,13 +27,7 @@ build_script:
   - cmd: dotnet build
 test_script:
 - ps: >-
-    nuget install xunit.runner.console -OutputDirectory packages -Version 2.4.1
-    
-    nuget install OpenCover -OutputDirectory packages -Version 4.7.922
-    
-    dotnet tool install coveralls.net --version 1.0.0 --tool-path tools
-    
-    dotnet .\packages\OpenCover.4.7.922\tools\OpenCover.Console.exe -register:user -target:dotnet.exe "-targetargs:"".\packages\xunit.runner.console.2.4.1\tools\netcoreapp3.1\xunit.console.dll"" ""src\GameOfLife.xUnit.Tests\bin\Release\netcoreapp3.1\GameOfLife.xUnit.Tests.dll"" -noshadow -appveyor" -filter:"+[GameOfLife*]*" -oldStyle -output:opencoverCoverage.xml
+    .\packages\OpenCover.4.6.166\tools\OpenCover.Console.exe -register:user -target:dotnet.exe "-targetargs:"".\packages\xunit.runner.console.2.3.1\tools\netcoreapp3.1\xunit.console.dll"" ""src\PMF.Tests\bin\Release\netcoreapp3.1\PMF.Tests.dll"" -noshadow -appveyor" -filter:"+[PMF*]*" -oldStyle -output:opencoverCoverage.xml
     
     $coveralls = ".\tools\csmacnz.coveralls.exe"
     
