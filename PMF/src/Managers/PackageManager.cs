@@ -112,14 +112,9 @@ namespace PMF.Managers
             if (asset == null)
                 return PackageState.VersionNotFound;
 
-            if (validateSdkVersion(asset))
-            {
-                // If it is not installed, packageDirectory will have the value of the directory where the package should be
-                package = remotePackage;
-                return InstallPackage(remotePackage, asset);
-            }
-
-            return PackageState.Cancelled;
+            // If it is not installed, packageDirectory will have the value of the directory where the package should be
+            package = remotePackage;
+            return InstallPackage(remotePackage, asset);
         }
 
         public static bool Uninstall(string id)
@@ -151,13 +146,8 @@ namespace PMF.Managers
             if (localPackage.Assets[0].Version == asset.Version)
                 return PackageState.UpToDate;
 
-            if (validateSdkVersion(asset))
-            {
-                Uninstall(id);
-                return InstallPackage(remotePackage, asset);
-            }
-
-            return PackageState.Cancelled;
+            Uninstall(id);
+            return InstallPackage(remotePackage, asset);
         }
 
         /// <summary>
@@ -184,13 +174,8 @@ namespace PMF.Managers
 
             var asset = remotePackage.GetAssetVersion(version);
 
-            if (validateSdkVersion(asset))
-            {
-                Uninstall(id);
-                return InstallPackage(remotePackage, asset);
-            }
-
-            return PackageState.Cancelled;
+            Uninstall(id);
+            return InstallPackage(remotePackage, asset);
         }
 
         /// <summary>
@@ -198,7 +183,7 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>true if update success, false if package is not installed</returns>
-        public static PackageState UpdateBySdkVersion(string id, out Package package, bool dontAsk = false)
+        public static PackageState UpdateBySdkVersion(string id, out Package package)
         {
             package = null;
 
@@ -220,41 +205,8 @@ namespace PMF.Managers
             if (localPackage.Assets[0].Version == asset.Version)
                 return PackageState.UpToDate;
 
-            if (dontAsk || validateSdkVersion(asset))
-            {
-                Uninstall(id);
-                return InstallPackage(remotePackage, asset);
-            }
-
-            return PackageState.Cancelled;
-        }
-
-        private static bool validateSdkVersion(Asset asset)
-        {
-            if (asset.SdkVersion > Config.CurrentSdkVersion)
-                return askUser("You are installing a package which the sdk version is more recent than what you have. Would you like to continue?");
-            else if (asset.SdkVersion < Config.CurrentSdkVersion)
-                return askUser("You are installing a package which the sdk version is older than what you have. Would you like to continue?");
-
-            return true;
-        }
-
-        /// <summary>
-        /// Just asks the user something
-        /// </summary>
-        /// <returns>true yes, false no</returns>
-        private static bool askUser(string question)
-        {
-            Console.WriteLine($"{question} [Y][N]");
-            while (true)
-            {
-                char answer = char.ToLower(Console.ReadKey().KeyChar);
-
-                if (answer == 'n')
-                    return false;
-                else if (answer == 'y')
-                    return true;
-            }
+            Uninstall(id);
+            return InstallPackage(remotePackage, asset);
         }
     }
 }

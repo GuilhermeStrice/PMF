@@ -16,7 +16,6 @@ namespace PMF
         NotExisting,
         VersionNotFound,
 
-        Cancelled,
         Failed
     }
 }
