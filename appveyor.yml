@@ -27,7 +27,7 @@ build_script:
   - cmd: dotnet build
 test_script:
 - ps: >-
-    .\packages\OpenCover.4.6.166\tools\OpenCover.Console.exe -register:user -target:dotnet.exe "-targetargs:"".\packages\xunit.runner.console.2.3.1\tools\netcoreapp3.1\xunit.console.dll"" ""src\PMF.Tests\bin\Release\netcoreapp3.1\PMF.Tests.dll"" -noshadow -appveyor" -filter:"+[PMF*]*" -oldStyle -output:opencoverCoverage.xml
+    .\packages\OpenCover.4.6.166\tools\OpenCover.Console.exe -register:user -target:dotnet.exe "-targetargs:"".\packages\xunit.runner.console.2.3.1\tools\netcoreapp3.1\xunit.console.dll"" ""src\PMF.Tests\bin\Release\netcoreapp3.1\PMF.Tests.dll"" -noshadow -appveyor" -filter:"+[PMFYea*]*" -oldStyle -output:opencoverCoverage.xml
     
     $coveralls = ".\tools\csmacnz.coveralls.exe"
     
