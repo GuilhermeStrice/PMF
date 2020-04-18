@@ -20,8 +20,6 @@ namespace PMF
 
         public string FileName { get; set; }
 
-        public double FileSize { get; set; }
-
         public string Url { get; set; }
 
         public List<Dependency> Dependencies { get; set; }

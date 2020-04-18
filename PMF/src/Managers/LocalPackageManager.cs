@@ -111,7 +111,7 @@ namespace PMF.Managers
             ZipFile.ExtractToDirectory(Path.Combine(zipPath, asset.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID));
 
             foreach (var dependency in asset.Dependencies)
-                ZipFile.ExtractToDirectory(Path.Combine(zipPath, dependency.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID, "Dependencies", dependency.FileName));
+                ZipFile.ExtractToDirectory(Path.Combine(zipPath, dependency.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID, "Dependencies", dependency.ID));
 
             remotePackage.Assets.Clear();
             remotePackage.Assets.Add(asset);
