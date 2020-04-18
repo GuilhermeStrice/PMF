@@ -20,14 +20,6 @@ before_install:
   - nvm use 10.14.1
   - npm install
 addons:
-  coverity_scan:
-    project:
-      name: "xX-TheDoctor-Xx/PMF"
-      description: "Package Management Framework"
-    notification_email: guilhermesuicida123654@gmail.com
-    build_command_prepend: "donet restore"
-    build_command: "dotnet build"
-    branch_pattern: coverity_scan
   sonarcloud:
     organization: "xx-thedoctor-xx"
     token: "$TRAVIS_SONARCLOUD_TOKEN"
