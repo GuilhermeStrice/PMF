@@ -2,13 +2,13 @@
 
 # Build Status
 
-[![Build Status](https://travis-ci.com/xX-TheDoctor-Xx/PMF.svg?branch=master)](https://travis-ci.com/xX-TheDoctor-Xx/PMF) [![Build Status](https://travis-ci.com/xX-TheDoctor-Xx/PMF.svg?branch=master)](https://travis-ci.com/xX-TheDoctor-Xx/PMF) [![Coverage Status](https://coveralls.io/repos/github/xX-TheDoctor-Xx/PMF/badge.svg?branch=master)](https://coveralls.io/github/xX-TheDoctor-Xx/PMF?branch=master)
+[![Build Status](https://travis-ci.com/xX-TheDoctor-Xx/PMF.svg?branch=master)](https://travis-ci.com/xX-TheDoctor-Xx/PMF) [![Build Status](https://travis-ci.com/xX-TheDoctor-Xx/PMF.svg?branch=master)](https://travis-ci.com/xX-TheDoctor-Xx/PMF)
 
 # Code Coverage
 
-<a href="https://scan.coverity.com/projects/xx-thedoctor-xx-pmf">
+[![Coverage Status](https://coveralls.io/repos/github/xX-TheDoctor-Xx/PMF/badge.svg?branch=master)](https://coveralls.io/github/xX-TheDoctor-Xx/PMF?branch=master) <a href="https://scan.coverity.com/projects/xx-thedoctor-xx-pmf">
   <img alt="Coverity Scan Build Status" src="https://scan.coverity.com/projects/20882/badge.svg"/>
-</a>
+</a> [![Codacy Badge](https://api.codacy.com/project/badge/Grade/223fdbeb618c4f1c8969eb5a4a354bc6)](https://www.codacy.com/manual/guilhermesuicida123654/PMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=xX-TheDoctor-Xx/PMF&amp;utm_campaign=Badge_Grade)
 
 PMF is a barebones C# library that provides basic support for package management
 
