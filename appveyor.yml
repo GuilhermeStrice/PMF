@@ -1,7 +1,7 @@
 version: 1.0.{build}
 skip_tags: true
 image: Visual Studio 2019
-skip_tags: true
+
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
