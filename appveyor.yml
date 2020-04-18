@@ -21,7 +21,7 @@ before_build:
   - cmd: dotnet restore
 build_script:
   # output will be in ./src/bin/debug/netcoreapp1.1/publish
-  - cmd: dotnet build -c Release
+  - cmd: dotnet build
 test_script:
 - ps: >-
     nuget install xunit.runner.console -OutputDirectory packages -Version 2.4.1
@@ -30,7 +30,7 @@ test_script:
     
     dotnet tool install coveralls.net --version 1.0.0 --tool-path tools
     
-    .\packages\OpenCover.4.7.922\tools\OpenCover.Console.exe -register:user -target:dotnet.exe "-targetargs:"".\packages\xunit.runner.console.2.4.1\tools\netcoreapp2.0\xunit.console.dll"" ""src\GameOfLife.xUnit.Tests\bin\Release\netcoreapp2.0\GameOfLife.xUnit.Tests.dll"" -noshadow -appveyor" -filter:"+[GameOfLife*]*" -oldStyle -output:opencoverCoverage.xml
+    .\packages\OpenCover.4.7.922\tools\OpenCover.Console.exe -register:user -target:dotnet.exe "-targetargs:"".\packages\xunit.runner.console.2.4.1\tools\netcoreapp3.1\xunit.console.dll"" ""src\GameOfLife.xUnit.Tests\bin\Release\netcoreapp3.1\GameOfLife.xUnit.Tests.dll"" -noshadow -appveyor" -filter:"+[GameOfLife*]*" -oldStyle -output:opencoverCoverage.xml
     
     $coveralls = ".\tools\csmacnz.coveralls.exe"
     
