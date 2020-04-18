@@ -44,15 +44,13 @@ namespace PMF
         //      - a name
         //      - an author
         //      - a description
-        //      - at least one asset
         public bool IsValid()
         {
             return !string.IsNullOrEmpty(ID) &&
                    Type != PackageType.None &&
                    !string.IsNullOrEmpty(Name) &&
                    !string.IsNullOrEmpty(Author) &&
-                   !string.IsNullOrEmpty(Description) &&
-                   Assets.Count > 0;
+                   !string.IsNullOrEmpty(Description);
         }
     }
 }

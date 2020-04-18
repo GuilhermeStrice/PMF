@@ -54,7 +54,7 @@ public static PackageState InstallBySdkVersion(string id, out Package package)
 
 Uninstalls a package
 
-```
+```csharp
 public static bool Uninstall(string id)
 ```
 
@@ -107,7 +107,7 @@ Version Config.CurrentSdkVersion
 Temporary folder where zip files will be downloaded to, gets deleted at the end of execution
 
 ```csharp
-    string Config.TemporaryFolder
+string Config.TemporaryFolder
 ```
 
 ## JSON
