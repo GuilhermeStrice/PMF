@@ -11,14 +11,14 @@ app.use(express.static('public'))
 app.get('/package/:id', async (req, res) =>
 {
     var con = await pool.getConnection()
-    var package = (await con.query("SELECT id_package, ID, Type, Name, Description FROM package WHERE BINARY ID = BINARY ? LIMIT 1", [req.params.id]))
-    if (package.length === 1)
+    var pkg = (await con.query("SELECT id_package, ID, Type, Name, Description FROM package WHERE BINARY ID = BINARY ? LIMIT 1", [req.params.id]))
+    if (pkg.length === 1)
     {
-        package = package[0]
+        pkg = pkg[0]
         var assets = await con.query("SELECT id_asset, Version, SdkVersion, Checksum, FileName, Url FROM asset_table WHERE id_package = ?", [package["id_package"]])
 
         // don't need this anymore
-        delete package["id_package"]
+        delete pkg["id_package"]
 
         if (assets.length > 0)
         {
@@ -32,11 +32,11 @@ app.get('/package/:id', async (req, res) =>
                 assets[i]["Dependencies"] = dependencies
             }
 
-            package["Assets"] = assets
+            pkg["Assets"] = assets
         }
     }
 
-    res.json(package)
+    res.json(pkg)
 });
 
 app.listen(port, () => console.log(`http://localhost:${port}`));

@@ -13,8 +13,7 @@ namespace PMF
         [JsonConverter(typeof(VersionConverter))]
         public Version Version { get; set; }
 
-        [JsonConverter(typeof(VersionConverter))]
-        public Version SdkVersion { get; set; }
+        public string SdkVersion { get; set; }
 
         public string Checksum { get; set; }
 

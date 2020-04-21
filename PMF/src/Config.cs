@@ -13,7 +13,7 @@ namespace PMF
 
         public static string RepositoryEndpoint { get; set; }
 
-        public static Version CurrentSdkVersion { get; set; }
+        public static string CurrentSdkVersion { get; set; }
 
         public static bool IsDebugging { get; set; }
 
