@@ -10,8 +10,9 @@ namespace PMF
         /// <summary>
         /// Nice hack to reuse this bit of code very effectively, this method is just used in List<T> where T is Package, otherwise this method doesn't even show up
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="id"></param>
+        /// <param name="list">This is not an actual parameter</param>
+        /// <param name="id">The id of the package</param>
+        /// <returns>True if removed, false if not found</returns>
         public static bool Remove(this List<Package> list, string id)
         {
             for (int i = 0; i < list.Count; i++)
@@ -30,9 +31,9 @@ namespace PMF
         /// <summary>
         /// Same as Remove, but it Retrieves
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="list">This is not an actual parameter</param>
+        /// <param name="id">The id of the package</param>
+        /// <returns>The package that was retrieved</returns>
         public static Package GetPackage(this List<Package> list, string id)
         {
             if (id == null || id.Length == 0)

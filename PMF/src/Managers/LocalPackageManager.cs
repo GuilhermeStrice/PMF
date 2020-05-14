@@ -55,14 +55,19 @@ namespace PMF.Managers
             }
         }
 
-        private static void validateManifestFile()
+        internal static void validateManifestFile()
         {
             if (!File.Exists(Config.ManifestFileName))
                 File.Create(Config.ManifestFileName).Close();
-            if (PackageList == null)
-                PackageList = new List<Package>();
         }
 
+        /// <summary>
+        /// Checks if a given package is installed
+        /// </summary>
+        /// <param name="id">The id of the package</param>
+        /// <param name="package">This value is defined if the package exists, its contents will be the actual package</param>
+        /// <param name="packageDirectory">The directory which the package is installed</param>
+        /// <returns>True if package is installed, false otherwise</returns>
         public static bool IsPackageInstalled(string id, out Package package, out string packageDirectory)
         {
             package = null;
@@ -82,6 +87,11 @@ namespace PMF.Managers
             }
         }
 
+        /// <summary>
+        /// Uninstalls a package
+        /// </summary>
+        /// <param name="id">The id of the package</param>
+        /// <returns>True if uninstalled correctly, false otherwise</returns>
         public static bool RemovePackage(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -105,8 +115,9 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="remotePackage">The package which is to be installed</param>
         /// <param name="asset">The version of the asset being installed</param>
-        /// <param name="zipPath"></param>
-        public static void InstallPackage(Package remotePackage, Asset asset, string zipPath, out Package package)
+        /// <param name="zipPath">The path to the zip file that is to be installed</param>
+        /// <returns>The package that was installed</returns>
+        public static Package InstallPackage(Package remotePackage, Asset asset, string zipPath)
         {
             ZipFile.ExtractToDirectory(Path.Combine(zipPath, asset.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID));
 
@@ -116,9 +127,9 @@ namespace PMF.Managers
             remotePackage.Assets.Clear();
             remotePackage.Assets.Add(asset);
 
-            package = remotePackage;
-
             PackageList.Add(remotePackage);
+
+            return remotePackage;
         }
     }
 }

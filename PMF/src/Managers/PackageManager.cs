@@ -15,9 +15,8 @@ namespace PMF.Managers
         /// <returns>true Installation successful, false already installed</returns>
         public static PackageState InstallPackage(Package package, Asset asset)
         {
-            // If it is not installed, packageDirectory will have the value of the directory where the package should be
             string zipFile = RemotePackageManager.DownloadAsset(package.ID, asset);
-            LocalPackageManager.InstallPackage(package, asset, zipFile, out package);
+            LocalPackageManager.InstallPackage(package, asset, zipFile);
             return PackageState.Installed;
         }
 
@@ -26,6 +25,7 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id">The id of the package</param>
         /// <param name="version">The version of the asset</param>
+        /// <param name="package">The package that was installed</param>
         /// <returns>true Installation successful, false already installed</returns>
         public static PackageState Install(string id, Version version, out Package package)
         {
@@ -45,7 +45,6 @@ namespace PMF.Managers
                 if (asset == null)
                     return PackageState.VersionNotFound;
 
-                // If it is not installed, packageDirectory will have the value of the directory where the package should be
                 package = remotePackage;
                 return InstallPackage(remotePackage, asset);
             }
@@ -59,7 +58,7 @@ namespace PMF.Managers
         /// Installs a package given a version
         /// </summary>
         /// <param name="id">The id of the package</param>
-        /// <param name="version">The version of the asset</param>
+        /// <param name="package">The package that was installed</param>
         /// <returns>true Installation successful, false already installed</returns>
         public static PackageState InstallLatest(string id, out Package package)
         {
@@ -79,7 +78,6 @@ namespace PMF.Managers
                 if (asset == null)
                     return PackageState.VersionNotFound;
 
-                // If it is not installed, packageDirectory will have the value of the directory where the package should be
                 package = remotePackage;
                 return InstallPackage(remotePackage, asset);
             }
@@ -92,7 +90,8 @@ namespace PMF.Managers
         /// <summary>
         /// Installs a package to the most recent version given an sdk version
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The id of the package</param>
+        /// <param name="package">The package that was installed</param>
         /// <returns>true update succes, false update failed or cancelled</returns>
         public static PackageState InstallBySdkVersion(string id, out Package package)
         {
@@ -112,11 +111,15 @@ namespace PMF.Managers
             if (asset == null)
                 return PackageState.VersionNotFound;
 
-            // If it is not installed, packageDirectory will have the value of the directory where the package should be
             package = remotePackage;
             return InstallPackage(remotePackage, asset);
         }
 
+        /// <summary>
+        /// Uninstalls a package
+        /// </summary>
+        /// <param name="id">The id of the package</param>
+        /// <returns>True if success, false otherwise</returns>
         public static bool Uninstall(string id)
         {
             return LocalPackageManager.RemovePackage(id);
@@ -125,7 +128,8 @@ namespace PMF.Managers
         /// <summary>
         /// Updates a package to the most recent version regardless of sdk version
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The id of the package</param>
+        /// <param name="package">The package that was installed</param>
         /// <returns>true update succes, false update failed or cancelled</returns>
         public static PackageState UpdateLatest(string id, out Package package)
         {
@@ -153,8 +157,9 @@ namespace PMF.Managers
         /// <summary>
         /// Updates a package to the most recent version regardless of sdk version
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>true update succes, false update failed or cancelled</returns>
+        /// <param name="id">The id of the package</param>
+        /// <param name="package">The package that was installed</param>
+        /// <returns>True update success, false update failed or cancelled</returns>
         public static PackageState UpdatePackage(string id, Version version, out Package package)
         {
             package = null;
@@ -174,15 +179,18 @@ namespace PMF.Managers
 
             var asset = remotePackage.GetAssetVersion(version);
 
+            // We don't want to check here if it was success, we just was to remove the package if it is installed
             Uninstall(id);
+
             return InstallPackage(remotePackage, asset);
         }
 
         /// <summary>
         /// Updates a package to the most recent version given an sdk version
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>true if update success, false if package is not installed</returns>
+        /// <param name="id">The id of the package</param>
+        /// <param name="package">The package that was installed</param>
+        /// <returns>True if update success, false if package is not installed</returns>
         public static PackageState UpdateBySdkVersion(string id, out Package package)
         {
             package = null;

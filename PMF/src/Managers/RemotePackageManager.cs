@@ -12,7 +12,7 @@ namespace PMF.Managers
         /// <summary>
         /// Gets package info from the server along with ALL the assets in the json
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The id of the package</param>
         /// <returns>The package object downloaded</returns>
         public static Package GetPackageInfo(string id)
         {
@@ -34,7 +34,8 @@ namespace PMF.Managers
         /// <summary>
         /// Downloads a specific version of a certain package
         /// </summary>
-        /// <param name="asset"></param>
+        /// <param name="id">The id of the package</param>
+        /// <param name="asset">The asset that is to be downloaded</param>
         /// <returns>The zip file which was downloaded</returns>
         public static string DownloadAsset(string id, Asset asset)
         {
@@ -52,12 +53,14 @@ namespace PMF.Managers
         /// <summary>
         /// Gets you the latest version of a package
         /// </summary>
-        /// <param name="package"></param>
+        /// <param name="package">The package object to get the latest version</param>
         /// <returns>The latest asset version of a given package</returns>
         public static Asset GetAssetLatestVersion(Package package)
         {
             if (package == null)
                 throw new ArgumentNullException();
+
+            // Maybe throw a different exception here
             if (package.Assets.Count == 0)
                 throw new ArgumentNullException("asset count");
 
@@ -74,8 +77,7 @@ namespace PMF.Managers
         /// <summary>
         /// Gets you the latest version of a package given an SDK version
         /// </summary>
-        /// <param name="package"></param>
-        /// <param name="sdkVersion"></param>
+        /// <param name="package">The package object to get the asset</param>
         /// <returns>The latest asset version of a given package and given SDK version</returns>
         public static Asset GetAssetLatestVersionBySdkVersion(Package package)
         {
