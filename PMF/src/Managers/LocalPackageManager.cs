@@ -13,8 +13,6 @@ namespace PMF.Managers
     /// </summary>
     internal static class LocalPackageManager
     {
-        public static List<Package> PackageList { get; private set; }
-
         /// <summary>
         /// Does all the checking locally when the program starts
         /// THIS NEEDS TO BE CALLED!
@@ -26,7 +24,7 @@ namespace PMF.Managers
             try
             {
                 var json = File.ReadAllText(Config.ManifestFileName);
-                PackageList = JsonConvert.DeserializeObject<List<Package>>(json);
+                PackageManager.PackageList = JsonConvert.DeserializeObject<List<Package>>(json);
             }
             catch (FileNotFoundException)
             {
@@ -42,7 +40,7 @@ namespace PMF.Managers
         {
             validateManifestFile();
 
-            var json = JsonConvert.SerializeObject(PackageList);
+            var json = JsonConvert.SerializeObject(PackageManager.PackageList);
 
             try
             {
@@ -78,7 +76,7 @@ namespace PMF.Managers
 
             try
             {
-                package = PackageList.GetPackage(id);
+                package = PackageManager.PackageList.GetPackage(id);
                 return true;
             }
             catch
@@ -107,7 +105,7 @@ namespace PMF.Managers
                 // Do nothing, user probably already deleted the folder
             }
 
-            return PackageList.Remove(id);
+            return PackageManager.PackageList.Remove(id);
         }
 
         /// <summary>
@@ -127,7 +125,7 @@ namespace PMF.Managers
             remotePackage.Assets.Clear();
             remotePackage.Assets.Add(asset);
 
-            PackageList.Add(remotePackage);
+            PackageManager.PackageList.Add(remotePackage);
 
             return remotePackage;
         }

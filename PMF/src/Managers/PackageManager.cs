@@ -7,6 +7,8 @@ namespace PMF.Managers
 {
     public static class PackageManager
     {
+        public static List<Package> PackageList { get; internal set; }
+
         private static bool initialized = false;
 
         /// <summary>
