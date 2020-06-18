@@ -91,7 +91,7 @@ public static PackageState UpdateBySdkVersion(string id, out Package package, bo
 Defines the manifest file name
 
 ```csharp
-public static string Config.ManifestFileName = "manifest.json";
+string Config.ManifestFileName = "manifest.json";
 ```
 
 Defines the folder where packages are to be installed
