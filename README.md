@@ -31,11 +31,11 @@ PMF is a barebones C# library that provides basic support for package management
 These functions need to be called at the beggining of the program and at the end, respectively, they handle the manifest.json file that is saved with information regarding packages installed 
 
 ```csharp
-public static void PackageManager.Start();
+PackageManager.Start();
 
 // Do stuff
 
-public static void PackageManager.Stop();
+PackageManager.Stop();
 ```
 
 ### Install
@@ -91,7 +91,7 @@ public static PackageState UpdateBySdkVersion(string id, out Package package, bo
 Defines the manifest file name
 
 ```csharp
-string Config.ManifestFileName = "manifest.json";
+public static string Config.ManifestFileName = "manifest.json";
 ```
 
 Defines the folder where packages are to be installed
