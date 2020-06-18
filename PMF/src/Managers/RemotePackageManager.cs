@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PMF.Managers
 {
-    public static class RemotePackageManager
+    internal static class RemotePackageManager
     {
         /// <summary>
         /// Gets package info from the server along with ALL the assets in the json

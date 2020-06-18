@@ -11,7 +11,7 @@ namespace PMF.Managers
     /// <summary>
     /// Manages all the local files
     /// </summary>
-    public static class LocalPackageManager
+    internal static class LocalPackageManager
     {
         public static List<Package> PackageList { get; private set; }
 
@@ -55,7 +55,7 @@ namespace PMF.Managers
             }
         }
 
-        internal static void validateManifestFile()
+        public static void validateManifestFile()
         {
             if (!File.Exists(Config.ManifestFileName))
                 File.Create(Config.ManifestFileName).Close();

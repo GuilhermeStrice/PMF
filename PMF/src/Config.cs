@@ -25,7 +25,7 @@ namespace PMF
         /// <summary>
         /// The current SDK version
         /// </summary>
-        public static string CurrentSdkVersion { get; set; }
+        public static string CurrentSdkVersion { get; set; } = null;
 
         /// <summary>
         /// Internal flag to spit out debug info
