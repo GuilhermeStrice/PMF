@@ -16,6 +16,7 @@ namespace PMF
         NotExisting,
         VersionNotFound,
 
+        // Common
         Failed
     }
 }

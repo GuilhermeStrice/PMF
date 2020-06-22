@@ -5,6 +5,10 @@ using System.Text;
 
 namespace PMF.Managers
 {
+    /// <summary>
+    /// Global Package manager for PMF
+    /// Combines RemotePackageManager and LocalPackageManager
+    /// </summary>
     public static class PackageManager
     {
         public static List<Package> PackageList { get; internal set; }
@@ -16,8 +20,20 @@ namespace PMF.Managers
         /// </summary>
         public static void Start()
         {
-            LocalPackageManager.Start();
-            initialized = true;
+            try
+            {
+                if (!initialized)
+                {
+                    LocalPackageManager.Start();
+                    initialized = true;
+                    Console.WriteLine("PMF intialized succesfully");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"PMF failed to initialize. \n${ex.InnerException.Message}\nClosing.");
+                Environment.Exit(0);
+            }
         }
 
         /// <summary>
@@ -25,12 +41,21 @@ namespace PMF.Managers
         /// </summary>
         public static void Stop()
         {
-            LocalPackageManager.Stop();
+            try
+            {
+                if (initialized)
+                    LocalPackageManager.Stop();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Something failed while cleaning up PMF - \n{ex.InnerException.Message}");
+            }
         }
 
         private static void notInitialized()
         {
-            Console.WriteLine("You must initialize PMF first before using it");
+            Console.WriteLine("You must initialize PMF first before using it.\nClosing");
+            Environment.Exit(0);
         }
 
         /// <summary>
@@ -42,10 +67,7 @@ namespace PMF.Managers
         public static PackageState InstallPackage(Package package, Asset asset)
         {
             if (!initialized)
-            {
                 notInitialized();
-                return PackageState.Failed;
-            }
 
             string zipFile = RemotePackageManager.DownloadAsset(package.ID, asset);
             LocalPackageManager.InstallPackage(package, asset, zipFile);
@@ -64,15 +86,11 @@ namespace PMF.Managers
             package = null;
 
             if (!initialized)
-            {
                 notInitialized();
-                return PackageState.Failed;
-            }
 
             // check if is already installed
             if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
             {
-                // get package info for version
                 Package remotePackage = RemotePackageManager.GetPackageInfo(id);
 
                 if (remotePackage == null)
@@ -103,10 +121,7 @@ namespace PMF.Managers
             package = null;
 
             if (!initialized)
-            {
                 notInitialized();
-                return PackageState.Failed;
-            }
 
             // check if is already installed
             if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
@@ -142,10 +157,7 @@ namespace PMF.Managers
             package = null;
 
             if (!initialized)
-            {
                 notInitialized();
-                return PackageState.Failed;
-            }
 
             // check if is already installed
             if (LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
@@ -173,10 +185,7 @@ namespace PMF.Managers
         public static bool Uninstall(string id)
         {
             if (!initialized)
-            {
                 notInitialized();
-                return false;
-            }
 
             return LocalPackageManager.RemovePackage(id);
         }
@@ -192,10 +201,7 @@ namespace PMF.Managers
             package = null;
 
             if (!initialized)
-            {
                 notInitialized();
-                return PackageState.Failed;
-            }
 
             // check if is already installed
             if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
@@ -227,10 +233,7 @@ namespace PMF.Managers
             package = null;
 
             if (!initialized)
-            {
                 notInitialized();
-                return PackageState.Failed;
-            }
 
             // check if is already installed
             if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
@@ -264,10 +267,7 @@ namespace PMF.Managers
             package = null;
 
             if (!initialized)
-            {
                 notInitialized();
-                return PackageState.Failed;
-            }
 
             if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string pd))
                 return PackageState.NotInstalled;

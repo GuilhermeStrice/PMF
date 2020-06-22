@@ -20,16 +20,8 @@ namespace PMF.Managers
         public static void Start()
         {
             validateManifestFile();
-
-            try
-            {
-                var json = File.ReadAllText(Config.ManifestFileName);
-                PackageManager.PackageList = JsonConvert.DeserializeObject<List<Package>>(json);
-            }
-            catch (FileNotFoundException)
-            {
-                // Something failed with validateManifestFile()
-            }
+            var json = File.ReadAllText(Config.ManifestFileName);
+            PackageManager.PackageList = JsonConvert.DeserializeObject<List<Package>>(json);
         }
 
         /// <summary>
@@ -41,16 +33,8 @@ namespace PMF.Managers
             validateManifestFile();
 
             var json = JsonConvert.SerializeObject(PackageManager.PackageList);
-
-            try
-            {
-                File.WriteAllText(Config.ManifestFileName, json);
-                Directory.Delete(Config.TemporaryFolder, true);
-            }
-            catch (IOException)
-            {
-                // Something failed with validateManifestFile()
-            }
+            File.WriteAllText(Config.ManifestFileName, json);
+            Directory.Delete(Config.TemporaryFolder, true);
         }
 
         public static void validateManifestFile()

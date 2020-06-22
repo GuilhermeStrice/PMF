@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PMF.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,7 +43,6 @@ namespace PMF.Managers
             using (WebClient client = new WebClient())
             {
                 var zipPath = Path.Combine(Config.TemporaryFolder, id);
-                Directory.CreateDirectory(zipPath);
                 client.DownloadFile(asset.Url, Path.Combine(zipPath, asset.FileName));
                 foreach (var dependency in asset.Dependencies)
                     client.DownloadFile(dependency.Url, Path.Combine(zipPath, dependency.FileName));
@@ -60,9 +60,8 @@ namespace PMF.Managers
             if (package == null)
                 throw new ArgumentNullException();
 
-            // Maybe throw a different exception here
             if (package.Assets.Count == 0)
-                throw new ArgumentNullException("asset count");
+                return null;
 
             Asset ret_asset = null;
             foreach (var asset in package.Assets)
@@ -84,7 +83,7 @@ namespace PMF.Managers
             if (package == null)
                 throw new ArgumentNullException();
             if (package.Assets.Count == 0)
-                throw new ArgumentNullException("asset count");
+                return null;
 
             Asset ret_asset = null;
             foreach (var asset in package.Assets)

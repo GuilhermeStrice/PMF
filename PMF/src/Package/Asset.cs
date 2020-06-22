@@ -7,6 +7,9 @@ using System.Text;
 
 namespace PMF
 {
+    /// <summary>
+    /// Asset version of a Package
+    /// </summary>
     public class Asset
     {
         /// <summary>
