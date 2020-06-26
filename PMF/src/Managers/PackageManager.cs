@@ -26,12 +26,11 @@ namespace PMF.Managers
                 {
                     LocalPackageManager.Start();
                     initialized = true;
-                    Console.WriteLine("PMF intialized succesfully");
                 }
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"PMF failed to initialize. \n${ex.InnerException.Message}\nClosing.");
+                PMF.InvokePackageMessageEvent($"PMF failed to initialize. \n${ex.InnerException.Message}\nClosing.");
                 Environment.Exit(0);
             }
         }
@@ -48,13 +47,18 @@ namespace PMF.Managers
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Something failed while cleaning up PMF - \n{ex.InnerException.Message}");
+                string message = null;
+                if (ex.InnerException != null)
+                    message = ex.InnerException.Message;
+                else
+                    message = ex.Message;
+                PMF.InvokePackageMessageEvent($"Something failed while cleaning up PMF - \n{message}");
             }
         }
 
         private static void notInitialized()
         {
-            Console.WriteLine("You must initialize PMF first before using it.\nClosing");
+            PMF.InvokePackageMessageEvent("You must initialize PMF first before using it.\nClosing");
             Environment.Exit(0);
         }
 
@@ -106,6 +110,7 @@ namespace PMF.Managers
             }
             else
             {
+                PMF.InvokePackageMessageEvent("Package already installed");
                 return PackageState.AlreadyInstalled;
             }
         }
@@ -142,6 +147,7 @@ namespace PMF.Managers
             }
             else
             {
+                PMF.InvokePackageMessageEvent("Package already installed");
                 return PackageState.AlreadyInstalled;
             }
         }
@@ -160,21 +166,26 @@ namespace PMF.Managers
                 notInitialized();
 
             // check if is already installed
-            if (LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            {
+                Package remotePackage = RemotePackageManager.GetPackageInfo(id);
+
+                if (remotePackage == null)
+                    return PackageState.NotExisting;
+
+                Asset asset = RemotePackageManager.GetAssetLatestVersionBySdkVersion(remotePackage);
+
+                if (asset == null)
+                    return PackageState.VersionNotFound;
+
+                package = remotePackage;
+                return InstallPackage(remotePackage, asset);
+            }
+            else
+            {
+                PMF.InvokePackageMessageEvent("Package already installed");
                 return PackageState.AlreadyInstalled;
-
-            Package remotePackage = RemotePackageManager.GetPackageInfo(id);
-
-            if (remotePackage == null)
-                return PackageState.NotExisting;
-
-            Asset asset = RemotePackageManager.GetAssetLatestVersionBySdkVersion(remotePackage);
-
-            if (asset == null)
-                return PackageState.VersionNotFound;
-
-            package = remotePackage;
-            return InstallPackage(remotePackage, asset);
+            }
         }
 
         /// <summary>
@@ -204,22 +215,27 @@ namespace PMF.Managers
                 notInitialized();
 
             // check if is already installed
-            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            if (LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            {
+                var remotePackage = RemotePackageManager.GetPackageInfo(id);
+
+                if (remotePackage == null)
+                    return PackageState.NotExisting;
+
+                var asset = RemotePackageManager.GetAssetLatestVersion(remotePackage);
+
+                // You already have the latest version
+                if (localPackage.Assets[0].Version == asset.Version)
+                    return PackageState.UpToDate;
+
+                Uninstall(id);
+                return InstallPackage(remotePackage, asset);
+            }
+            else
+            {
+                PMF.InvokePackageMessageEvent("Package not installed");
                 return PackageState.NotInstalled;
-
-            var remotePackage = RemotePackageManager.GetPackageInfo(id);
-
-            if (remotePackage == null)
-                return PackageState.NotExisting;
-
-            var asset = RemotePackageManager.GetAssetLatestVersion(remotePackage);
-
-            // You already have the latest version
-            if (localPackage.Assets[0].Version == asset.Version)
-                return PackageState.UpToDate;
-
-            Uninstall(id);
-            return InstallPackage(remotePackage, asset);
+            }
         }
 
         /// <summary>
@@ -236,24 +252,32 @@ namespace PMF.Managers
                 notInitialized();
 
             // check if is already installed
-            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            if (LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            {
+                // Up to date
+                if (localPackage.Assets[0].Version == version)
+                {
+                    PMF.InvokePackageMessageEvent("Already up to date");
+                    return PackageState.UpToDate;
+                }
+
+                var remotePackage = RemotePackageManager.GetPackageInfo(id);
+
+                if (remotePackage == null)
+                    return PackageState.NotExisting;
+
+                var asset = remotePackage.GetAssetVersion(version);
+
+                // We don't want to check here if it was success, we just was to remove the package if it is installed
+                Uninstall(id);
+
+                return InstallPackage(remotePackage, asset);
+            }
+            else
+            {
+                PMF.InvokePackageMessageEvent("Package not installed");
                 return PackageState.NotInstalled;
-
-            // You already have the latest version
-            if (localPackage.Assets[0].Version == version)
-                return PackageState.UpToDate;
-
-            var remotePackage = RemotePackageManager.GetPackageInfo(id);
-
-            if (remotePackage == null)
-                return PackageState.NotExisting;
-
-            var asset = remotePackage.GetAssetVersion(version);
-
-            // We don't want to check here if it was success, we just was to remove the package if it is installed
-            Uninstall(id);
-
-            return InstallPackage(remotePackage, asset);
+            }
         }
 
         /// <summary>
@@ -270,7 +294,10 @@ namespace PMF.Managers
                 notInitialized();
 
             if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string pd))
+            {
+                PMF.InvokePackageMessageEvent("Already up to date");
                 return PackageState.NotInstalled;
+            }
 
             var remotePackage = RemotePackageManager.GetPackageInfo(id);
             
@@ -281,11 +308,17 @@ namespace PMF.Managers
 
             // doesn't exist for provided sdk version
             if (asset == null)
+            {
+                PMF.InvokePackageMessageEvent("Package doesn't exist for provided SDK version");
                 return PackageState.NotExisting;
+            }
 
             // You already have the latest version
             if (localPackage.Assets[0].Version == asset.Version)
+            {
+                PMF.InvokePackageMessageEvent("Already up to date");
                 return PackageState.UpToDate;
+            }
 
             Uninstall(id);
             return InstallPackage(remotePackage, asset);

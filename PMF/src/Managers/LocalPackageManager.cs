@@ -22,6 +22,7 @@ namespace PMF.Managers
             validateManifestFile();
             var json = File.ReadAllText(Config.ManifestFileName);
             PackageManager.PackageList = JsonConvert.DeserializeObject<List<Package>>(json);
+            PMF.InvokePackageMessageEvent("Initialized PMF successfully");
         }
 
         /// <summary>
@@ -35,6 +36,7 @@ namespace PMF.Managers
             var json = JsonConvert.SerializeObject(PackageManager.PackageList);
             File.WriteAllText(Config.ManifestFileName, json);
             Directory.Delete(Config.TemporaryFolder, true);
+            PMF.InvokePackageMessageEvent("Successfully cleaned PMF");
         }
 
         public static void validateManifestFile()
@@ -83,10 +85,11 @@ namespace PMF.Managers
             {
                 string packageDirectory = Path.Combine(Config.PackageInstallationFolder, id);
                 Directory.Delete(packageDirectory, true);
+                PMF.InvokePackageMessageEvent($"Successfully removed package {id}");
             }
             catch
             {
-                // Do nothing, user probably already deleted the folder
+                PMF.InvokePackageMessageEvent($"Couldn't find package with id of: {id}. Removing from package list");
             }
 
             return PackageManager.PackageList.Remove(id);
@@ -101,15 +104,22 @@ namespace PMF.Managers
         /// <returns>The package that was installed</returns>
         public static Package InstallPackage(Package remotePackage, Asset asset, string zipPath)
         {
+            PMF.InvokePackageMessageEvent("Extracting package");
             ZipFile.ExtractToDirectory(Path.Combine(zipPath, asset.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID));
 
+            // Maybe a library folder and check if is installed
             foreach (var dependency in asset.Dependencies)
+            {
+                PMF.InvokePackageMessageEvent($"Extracting dependency with id: {dependency.ID}");
                 ZipFile.ExtractToDirectory(Path.Combine(zipPath, dependency.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID, "Dependencies", dependency.ID));
+            }
 
             remotePackage.Assets.Clear();
             remotePackage.Assets.Add(asset);
 
             PackageManager.PackageList.Add(remotePackage);
+
+            PMF.InvokePackageMessageEvent($"Successfully installed {remotePackage.ID}@{asset.Version}");
 
             return remotePackage;
         }

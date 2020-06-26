@@ -21,13 +21,15 @@ namespace PMF.Managers
             {
                 using (WebClient client = new WebClient())
                 {
+                    PMF.InvokePackageMessageEvent("Downloading package information");
                     string json = client.DownloadString($"{Config.RepositoryEndpoint}/{id}");
+                    PMF.InvokePackageMessageEvent("Parsing package information");
                     return JsonConvert.DeserializeObject<Package>(json);
                 }
             }
             catch (WebException)
             {
-                Console.Error.WriteLine("Couldn't download information from the server");
+                PMF.InvokePackageMessageEvent("Couldn't download information from the server");
                 return null;
             }
         }
@@ -42,10 +44,19 @@ namespace PMF.Managers
         {
             using (WebClient client = new WebClient())
             {
+                PMF.InvokePackageMessageEvent("Downloading asset");
+
                 var zipPath = Path.Combine(Config.TemporaryFolder, id);
                 client.DownloadFile(asset.Url, Path.Combine(zipPath, asset.FileName));
+
                 foreach (var dependency in asset.Dependencies)
+                {
+                    PMF.InvokePackageMessageEvent($"Downloading dependency with id: {dependency.ID}");
                     client.DownloadFile(dependency.Url, Path.Combine(zipPath, dependency.FileName));
+                }
+
+                PMF.InvokePackageMessageEvent("Finished downloading all required files");
+
                 return zipPath;
             }
         }
