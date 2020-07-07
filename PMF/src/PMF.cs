@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using PMF.Managers;
 
 namespace PMF
 {
@@ -9,6 +7,16 @@ namespace PMF
     public static class PMF
     {
         public static event OnPackageMessage OnPackageMessage;
+
+        public static void Start()
+        {
+            PackageManager.Start();
+        }
+
+        public static void Stop()
+        {
+            PackageManager.Stop();
+        }
 
         internal static void InvokePackageMessageEvent(string message)
         {
