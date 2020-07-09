@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json.Converters;
+using System;
+using System.Text.Json.Serialization;
 
 namespace PMF
 {
@@ -20,11 +22,13 @@ namespace PMF
         /// <summary>
         /// Type of dependency
         /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))] // This converts enum to string and vice versa when generating or parsing json
         public DependencyType Type { get; set; }
 
         /// <summary>
         /// Version of the dependency if type is Package
         /// </summary>
+        [JsonConverter(typeof(VersionConverter))] // This ensures the version object is correctly converted
         public Version Version { get; set; }
 
         /// <summary>

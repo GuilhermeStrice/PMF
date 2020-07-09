@@ -34,7 +34,7 @@ namespace PMF.Managers
             var json = JsonConvert.SerializeObject(PackageManager.PackageList);
             File.WriteAllText(Config.ManifestFileName, json);
             Directory.Delete(Config.TemporaryFolder, true);
-            PMF.InvokePackageMessageEvent("Successfully cleaned PMF");
+            // PMF.InvokePackageMessageEvent("Successfully cleaned PMF");
         }
 
         public static void validateManifestFile()
