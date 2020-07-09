@@ -128,27 +128,30 @@ This is the basic information a package would have
 	"Type": "Plugin",
 	"Name": "Im Something cool",
 	"Description": "This is a package that makes you cool and awesome",
-	"Assets": [
+	"Assets": 
+	[
 		{
 			"Version": "0.0.1",
 			"SdkVersion": "0.0.5",
 			"Checksum": "somethingCoolWithLettersAndNumbers",
 			"FileName": "name.zip",
 			"Url": "somewhereElseDoesntNeedToBeYourServer.zip",
-			"Dependencies": [
-			{
-				"ID": "Inner Spirit",
-				"Checksum": "somethingHere",
-				"Type": "Standalone",
-				"FileName": "zipped.zip",
-				"Url": "somewhereElseDoesntNeedToBeYourServer.zip"
-			},
-			{
-				"ID": "Other package id",
-				"Checksum": "somethingHere",
-				"Type": "Package",
-				"Version": "0.2.3"
-			}]
+			"Dependencies": 
+			[
+				{
+					"ID": "Inner Spirit",
+					"Checksum": "somethingHere",
+					"Type": "Standalone",
+					"FileName": "zipped.zip",
+					"Url": "somewhereElseDoesntNeedToBeYourServer.zip"
+				},
+				{
+					"ID": "Other package id",
+					"Checksum": "somethingHere",
+					"Type": "Package",
+					"Version": "0.2.3"
+				}
+			]
 		}
 	]
 }
