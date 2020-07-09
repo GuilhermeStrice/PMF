@@ -82,7 +82,7 @@ namespace PMF.Managers
         /// <param name="id">The id of the package</param>
         /// <param name="version">The version of the asset</param>
         /// <param name="package">The package that was installed</param>
-        /// <returns>true Installation successful, false already installed</returns>
+        /// <returns>Final package state of installation</returns>
         public static PackageState Install(string id, Version version, out Package package)
         {
             package = null;

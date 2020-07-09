@@ -1,4 +1,6 @@
-﻿namespace PMF
+﻿using System;
+
+namespace PMF
 {
     /// <summary>
     /// Files that an asset depends on
@@ -14,6 +16,16 @@
         /// Checksum of the dependency // TODO: implement
         /// </summary>
         public string Checksum { get; set; }
+
+        /// <summary>
+        /// Type of dependency
+        /// </summary>
+        public DependencyType Type { get; set; }
+
+        /// <summary>
+        /// Version of the dependency if type is Package
+        /// </summary>
+        public Version Version { get; set; }
 
         /// <summary>
         /// The file name of the dependecy

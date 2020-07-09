@@ -108,8 +108,34 @@ namespace PMF.Managers
             // Maybe a library folder and check if is installed
             foreach (var dependency in asset.Dependencies)
             {
-                PMF.InvokePackageMessageEvent($"Extracting dependency with id: {dependency.ID}");
-                ZipFile.ExtractToDirectory(Path.Combine(zipPath, dependency.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID, "Dependencies", dependency.ID));
+                if (dependency.Type == DependencyType.Standalone)
+                {
+                    PMF.InvokePackageMessageEvent($"Extracting dependency with id: {dependency.ID} of type standalone");
+                    ZipFile.ExtractToDirectory(Path.Combine(zipPath, dependency.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID, "Dependencies", dependency.ID));
+                }
+                else // DependencyType.Package
+                {
+                    PMF.InvokePackageMessageEvent($"Downloading dependency with id: {dependency.ID} of type package");
+
+                    var success = PackageManager.Install(dependency.ID, dependency.Version, out Package p);
+
+                    if (success == PackageState.Installed)
+                    {
+                        PMF.InvokePackageMessageEvent($"Package dependency installed successfully");
+                    }
+                    else if (success == PackageState.VersionNotFound)
+                    {
+                        PMF.InvokePackageMessageEvent("Asset not found");
+                    }
+                    else if (success == PackageState.NotExisting)
+                    {
+                        PMF.InvokePackageMessageEvent("Package not found");
+                    }
+                    else
+                    {
+                        PMF.InvokePackageMessageEvent($"Something went wrong installing dependency with id: {dependency.ID}");
+                    }
+                }
             }
 
             remotePackage.Assets.Clear();
