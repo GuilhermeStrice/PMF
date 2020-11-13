@@ -8,10 +8,10 @@ namespace PMF.Managers
     internal static class RemotePackageManager
     {
         /// <summary>
-        /// Gets package info from the server along with ALL the assets in the json
+        /// Gets package info from the server along with all the assets in the json
         /// </summary>
         /// <param name="id">The id of the package</param>
-        /// <returns>The package object downloaded</returns>
+        /// <returns>The package downloaded</returns>
         public static Package GetPackageInfo(string id)
         {
             try
@@ -36,7 +36,7 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id">The id of the package</param>
         /// <param name="asset">The asset that is to be downloaded</param>
-        /// <returns>The zip file which was downloaded</returns>
+        /// <returns>The zip file path which was downloaded</returns>
         public static string DownloadAsset(string id, Asset asset)
         {
             using (WebClient client = new WebClient())
@@ -56,54 +56,6 @@ namespace PMF.Managers
 
                 return zipPath;
             }
-        }
-
-        /// <summary>
-        /// Gets you the latest version of a package
-        /// </summary>
-        /// <param name="package">The package object to get the latest version</param>
-        /// <returns>The latest asset version of a given package</returns>
-        public static Asset GetAssetLatestVersion(Package package)
-        {
-            if (package == null)
-                throw new ArgumentNullException();
-
-            if (package.Assets.Count == 0)
-                return null;
-
-            Asset ret_asset = null;
-            foreach (var asset in package.Assets)
-            {
-                if (ret_asset == null || ret_asset.Version < asset.Version)
-                    ret_asset = asset;
-            }
-
-            return ret_asset;
-        }
-
-        /// <summary>
-        /// Gets you the latest version of a package given an SDK version
-        /// </summary>
-        /// <param name="package">The package object to get the asset</param>
-        /// <returns>The latest asset version of a given package and given SDK version</returns>
-        public static Asset GetAssetLatestVersionBySdkVersion(Package package)
-        {
-            if (package == null)
-                throw new ArgumentNullException();
-            if (package.Assets.Count == 0)
-                return null;
-
-            Asset ret_asset = null;
-            foreach (var asset in package.Assets)
-            {
-                if (asset.SdkVersion == Config.CurrentSdkVersion)
-                {
-                    if (ret_asset == null || ret_asset.Version < asset.Version)
-                        ret_asset = asset;
-                }
-            }
-
-            return ret_asset;
         }
     }
 }

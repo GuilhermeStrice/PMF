@@ -125,7 +125,7 @@ This is the basic information a package would have
 ```json
 {
 	"ID": "something_cool",
-	"Type": "Plugin",
+	"Type": "Package",
 	"Name": "Im Something cool",
 	"Description": "This is a package that makes you cool and awesome",
 	"Assets": 

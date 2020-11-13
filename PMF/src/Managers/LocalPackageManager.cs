@@ -34,13 +34,19 @@ namespace PMF.Managers
             var json = JsonConvert.SerializeObject(PackageManager.PackageList);
             File.WriteAllText(Config.ManifestFileName, json);
             Directory.Delete(Config.TemporaryFolder, true);
-            // PMF.InvokePackageMessageEvent("Successfully cleaned PMF");
+            PMF.InvokePackageMessageEvent("Successfully cleaned PMF");
         }
 
-        public static void validateManifestFile()
+        private static void validateManifestFile()
         {
+            PMF.InvokePackageMessageEvent("Validating manifest file");
+            if (string.IsNullOrEmpty(Config.ManifestFileName))
+                throw new ArgumentNullException("Manifest file name needs to be defined");
+
             if (!File.Exists(Config.ManifestFileName))
                 File.Create(Config.ManifestFileName).Close();
+
+            PMF.InvokePackageMessageEvent("Successfully validated manifest file");
         }
 
         /// <summary>
@@ -48,10 +54,11 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id">The id of the package</param>
         /// <param name="package">This value is defined if the package exists, its contents will be the actual package</param>
-        /// <param name="packageDirectory">The directory which the package is installed</param>
+        /// <param name="packageDirectory">The directory in which the package is installed</param>
         /// <returns>True if package is installed, false otherwise</returns>
-        public static bool IsPackageInstalled(string id, out Package package, out string packageDirectory)
+        public static bool IsPackageInstalled(string id, bool reportInexistence, out Package package, out string packageDirectory)
         {
+            PMF.InvokePackageMessageEvent($"Checking if {id} is installed");
             package = null;
 
             packageDirectory = Path.Combine(Config.PackageInstallationFolder, id);
@@ -61,10 +68,13 @@ namespace PMF.Managers
             try
             {
                 package = PackageManager.PackageList.GetPackage(id);
+                PMF.InvokePackageMessageEvent($"Found {id} with version {package.Assets[0].Version}");
                 return true;
             }
             catch
             {
+                if (reportInexistence)
+                    PMF.InvokePackageMessageEvent($"Couldn't find {id}");
                 return false;
             }
         }
@@ -76,8 +86,9 @@ namespace PMF.Managers
         /// <returns>True if uninstalled correctly, false otherwise</returns>
         public static bool RemovePackage(string id)
         {
+            PMF.InvokePackageMessageEvent($"Removing {id}");
             if (string.IsNullOrEmpty(id))
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Package id must be defined");
 
             try
             {
@@ -99,11 +110,14 @@ namespace PMF.Managers
         /// <param name="remotePackage">The package which is to be installed</param>
         /// <param name="asset">The version of the asset being installed</param>
         /// <param name="zipPath">The path to the zip file that is to be installed</param>
-        /// <returns>The package that was installed</returns>
-        public static Package InstallPackage(Package remotePackage, Asset asset, string zipPath)
+        /// <returns>State of the installation</returns>
+        public static PackageState InstallPackage(Package remotePackage, Asset asset, string zipPath)
         {
-            PMF.InvokePackageMessageEvent("Extracting package");
+            PMF.InvokePackageMessageEvent($"Extracting package {remotePackage.ID}");
             ZipFile.ExtractToDirectory(Path.Combine(zipPath, asset.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID));
+            PMF.InvokePackageMessageEvent($"Finished extracting package {remotePackage.ID}");
+
+            bool error = false;
 
             // Maybe a library folder and check if is installed
             foreach (var dependency in asset.Dependencies)
@@ -112,6 +126,7 @@ namespace PMF.Managers
                 {
                     PMF.InvokePackageMessageEvent($"Extracting dependency with id: {dependency.ID} of type standalone");
                     ZipFile.ExtractToDirectory(Path.Combine(zipPath, dependency.FileName), Path.Combine(Config.PackageInstallationFolder, remotePackage.ID, "Dependencies", dependency.ID));
+                    PMF.InvokePackageMessageEvent($"Finished extracting dependency {dependency.ID}");
                 }
                 else // DependencyType.Package
                 {
@@ -126,14 +141,17 @@ namespace PMF.Managers
                     else if (success == PackageState.VersionNotFound)
                     {
                         PMF.InvokePackageMessageEvent("Asset not found");
+                        error = true;
                     }
                     else if (success == PackageState.NotExisting)
                     {
                         PMF.InvokePackageMessageEvent("Package not found");
+                        error = true;
                     }
                     else
                     {
                         PMF.InvokePackageMessageEvent($"Something went wrong installing dependency with id: {dependency.ID}");
+                        error = true;
                     }
                 }
             }
@@ -143,9 +161,12 @@ namespace PMF.Managers
 
             PackageManager.PackageList.Add(remotePackage);
 
-            PMF.InvokePackageMessageEvent($"Successfully installed {remotePackage.ID}@{asset.Version}");
+            string errorMsg = "";
+            if (error)
+                errorMsg = " with errors. See above";
 
-            return remotePackage;
+            PMF.InvokePackageMessageEvent($"Successfully installed {remotePackage.ID}@{asset.Version} {errorMsg}");
+            return PackageState.Installed;
         }
     }
 }

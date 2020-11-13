@@ -15,7 +15,7 @@ namespace PMF
         /// <summary>
         /// The type of this package
         /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))] // This converts enum to string and vice versa when generating or parsing json
+        [JsonConverter(typeof(StringEnumConverter))]
         public PackageType Type { get; set; }
 
         /// <summary>
@@ -55,6 +55,49 @@ namespace PMF
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets you the latest version of a package
+        /// </summary>
+        /// <param name="package">The package object to get the latest version</param>
+        /// <returns>The latest asset version of a given package</returns>
+        public Asset GetAssetLatestVersion()
+        {
+            if (Assets.Count == 0)
+                return null;
+
+            Asset ret_asset = null;
+            foreach (var asset in Assets)
+            {
+                if (ret_asset == null || ret_asset.Version < asset.Version)
+                    ret_asset = asset;
+            }
+
+            return ret_asset;
+        }
+
+        /// <summary>
+        /// Gets you the latest version of a package given an SDK version
+        /// </summary>
+        /// <param name="package">The package object to get the asset</param>
+        /// <returns>The latest asset version of a given package and given SDK version</returns>
+        public Asset GetAssetLatestVersionBySdkVersion()
+        {
+            if (Assets.Count == 0)
+                return null;
+
+            Asset ret_asset = null;
+            foreach (var asset in Assets)
+            {
+                if (asset.SdkVersion == Config.CurrentSdkVersion)
+                {
+                    if (ret_asset == null || ret_asset.Version < asset.Version)
+                        ret_asset = asset;
+                }
+            }
+
+            return ret_asset;
         }
 
         // A valid package must have:

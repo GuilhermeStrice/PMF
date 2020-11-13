@@ -13,7 +13,7 @@ namespace PMF
         /// <summary>
         /// The version of this asset
         /// </summary>
-        [JsonConverter(typeof(VersionConverter))] // This ensures the version object is correctly converted
+        [JsonConverter(typeof(VersionConverter))]
         public Version Version { get; set; }
 
         /// <summary>

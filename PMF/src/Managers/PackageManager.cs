@@ -54,10 +54,13 @@ namespace PMF.Managers
             }
         }
 
-        private static void notInitialized()
+        private static void checkInitialization()
         {
-            PMF.InvokePackageMessageEvent("You must initialize PMF first before using it.\nClosing");
-            Environment.Exit(0);
+            if (!initialized)
+            {
+                PMF.InvokePackageMessageEvent("You must initialize PMF first before using it.\nClosing");
+                Environment.Exit(0);
+            }
         }
 
         /// <summary>
@@ -65,11 +68,10 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id">The id of the package</param>
         /// <param name="version">The version of the asset</param>
-        /// <returns>true Installation successful, false already installed</returns>
+        /// <returns>State of the package</returns>
         public static PackageState InstallPackage(Package package, Asset asset)
         {
-            if (!initialized)
-                notInitialized();
+            checkInitialization();
 
             string zipFile = RemotePackageManager.DownloadAsset(package.ID, asset);
             LocalPackageManager.InstallPackage(package, asset, zipFile);
@@ -87,11 +89,10 @@ namespace PMF.Managers
         {
             package = null;
 
-            if (!initialized)
-                notInitialized();
+            checkInitialization();
 
             // check if is already installed
-            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            if (!LocalPackageManager.IsPackageInstalled(id, false, out Package localPackage, out string packageDirectory))
             {
                 Package remotePackage = RemotePackageManager.GetPackageInfo(id);
 
@@ -118,16 +119,15 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id">The id of the package</param>
         /// <param name="package">The package that was installed</param>
-        /// <returns>true Installation successful, false already installed</returns>
+        /// <returns>State of the package</returns>
         public static PackageState InstallLatest(string id, out Package package)
         {
             package = null;
 
-            if (!initialized)
-                notInitialized();
+            checkInitialization();
 
             // check if is already installed
-            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            if (!LocalPackageManager.IsPackageInstalled(id, false, out Package localPackage, out string packageDirectory))
             {
                 // get package info for version
                 Package remotePackage = RemotePackageManager.GetPackageInfo(id);
@@ -135,7 +135,7 @@ namespace PMF.Managers
                 if (remotePackage == null)
                     return PackageState.NotExisting;
 
-                Asset asset = RemotePackageManager.GetAssetLatestVersion(package);
+                Asset asset = package.GetAssetLatestVersion();
 
                 if (asset == null)
                     return PackageState.VersionNotFound;
@@ -155,23 +155,22 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id">The id of the package</param>
         /// <param name="package">The package that was installed</param>
-        /// <returns>true update succes, false update failed or cancelled</returns>
+        /// <returns>State of the package</returns>
         public static PackageState InstallBySdkVersion(string id, out Package package)
         {
             package = null;
 
-            if (!initialized)
-                notInitialized();
+            checkInitialization();
 
             // check if is already installed
-            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            if (!LocalPackageManager.IsPackageInstalled(id, false, out Package localPackage, out string packageDirectory))
             {
                 Package remotePackage = RemotePackageManager.GetPackageInfo(id);
 
                 if (remotePackage == null)
                     return PackageState.NotExisting;
 
-                Asset asset = RemotePackageManager.GetAssetLatestVersionBySdkVersion(remotePackage);
+                Asset asset = remotePackage.GetAssetLatestVersionBySdkVersion();
 
                 if (asset == null)
                     return PackageState.VersionNotFound;
@@ -193,8 +192,7 @@ namespace PMF.Managers
         /// <returns>True if success, false otherwise</returns>
         public static bool Uninstall(string id)
         {
-            if (!initialized)
-                notInitialized();
+            checkInitialization();
 
             return LocalPackageManager.RemovePackage(id);
         }
@@ -204,23 +202,22 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id">The id of the package</param>
         /// <param name="package">The package that was installed</param>
-        /// <returns>true update succes, false update failed or cancelled</returns>
+        /// <returns>State of the package</returns>
         public static PackageState UpdateLatest(string id, out Package package)
         {
             package = null;
 
-            if (!initialized)
-                notInitialized();
+            checkInitialization();
 
             // check if is already installed
-            if (LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            if (LocalPackageManager.IsPackageInstalled(id, true, out Package localPackage, out string packageDirectory))
             {
                 var remotePackage = RemotePackageManager.GetPackageInfo(id);
 
                 if (remotePackage == null)
                     return PackageState.NotExisting;
 
-                var asset = RemotePackageManager.GetAssetLatestVersion(remotePackage);
+                var asset = remotePackage.GetAssetLatestVersion();
 
                 // You already have the latest version
                 if (localPackage.Assets[0].Version == asset.Version)
@@ -241,16 +238,15 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id">The id of the package</param>
         /// <param name="package">The package that was installed</param>
-        /// <returns>True update success, false update failed or cancelled</returns>
+        /// <returns>State of the package</returns>
         public static PackageState UpdatePackage(string id, Version version, out Package package)
         {
             package = null;
 
-            if (!initialized)
-                notInitialized();
+            checkInitialization();
 
             // check if is already installed
-            if (LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
+            if (LocalPackageManager.IsPackageInstalled(id, true, out Package localPackage, out string packageDirectory))
             {
                 // Up to date
                 if (localPackage.Assets[0].Version == version)
@@ -283,15 +279,14 @@ namespace PMF.Managers
         /// </summary>
         /// <param name="id">The id of the package</param>
         /// <param name="package">The package that was installed</param>
-        /// <returns>True if update success, false if package is not installed</returns>
+        /// <returns>State of the package</returns>
         public static PackageState UpdateBySdkVersion(string id, out Package package)
         {
             package = null;
 
-            if (!initialized)
-                notInitialized();
+            checkInitialization();
 
-            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string pd))
+            if (!LocalPackageManager.IsPackageInstalled(id, true, out Package localPackage, out string pd))
             {
                 PMF.InvokePackageMessageEvent("Already up to date");
                 return PackageState.NotInstalled;
@@ -302,7 +297,7 @@ namespace PMF.Managers
             if (remotePackage == null)
                 return PackageState.NotExisting;
 
-            var asset = RemotePackageManager.GetAssetLatestVersionBySdkVersion(remotePackage);
+            var asset = remotePackage.GetAssetLatestVersionBySdkVersion();
 
             // doesn't exist for provided sdk version
             if (asset == null)
