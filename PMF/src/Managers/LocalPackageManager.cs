@@ -20,7 +20,8 @@ namespace PMF.Managers
             validateManifestFile();
             var json = File.ReadAllText(Config.ManifestFileName);
             PackageManager.PackageList = JsonConvert.DeserializeObject<List<Package>>(json);
-            PMF.InvokePackageMessageEvent("Initialized PMF successfully");
+            
+            //PMF.InvokePackageMessageEvent("Initialized PMF successfully");
         }
 
         /// <summary>
@@ -34,14 +35,15 @@ namespace PMF.Managers
             var json = JsonConvert.SerializeObject(PackageManager.PackageList);
             File.WriteAllText(Config.ManifestFileName, json);
             Directory.Delete(Config.TemporaryFolder, true);
-            PMF.InvokePackageMessageEvent("Successfully cleaned PMF");
+            
+            //PMF.InvokePackageMessageEvent("Successfully cleaned PMF");
         }
 
         private static void validateManifestFile()
         {
             PMF.InvokePackageMessageEvent("Validating manifest file");
             if (string.IsNullOrEmpty(Config.ManifestFileName))
-                throw new ArgumentNullException("Manifest file name needs to be defined");
+                throw new ArgumentNullException("");
 
             if (!File.Exists(Config.ManifestFileName))
                 File.Create(Config.ManifestFileName).Close();
@@ -56,7 +58,7 @@ namespace PMF.Managers
         /// <param name="package">This value is defined if the package exists, its contents will be the actual package</param>
         /// <param name="packageDirectory">The directory in which the package is installed</param>
         /// <returns>True if package is installed, false otherwise</returns>
-        public static bool IsPackageInstalled(string id, bool reportInexistence, out Package package, out string packageDirectory)
+        public static bool IsPackageInstalled(string id, out Package package, out string packageDirectory)
         {
             PMF.InvokePackageMessageEvent($"Checking if {id} is installed");
             package = null;
@@ -73,8 +75,7 @@ namespace PMF.Managers
             }
             catch
             {
-                if (reportInexistence)
-                    PMF.InvokePackageMessageEvent($"Couldn't find {id}");
+                PMF.InvokePackageMessageEvent($"Couldn't find {id}");
                 return false;
             }
         }
@@ -86,9 +87,13 @@ namespace PMF.Managers
         /// <returns>True if uninstalled correctly, false otherwise</returns>
         public static bool RemovePackage(string id)
         {
-            PMF.InvokePackageMessageEvent($"Removing {id}");
             if (string.IsNullOrEmpty(id))
-                throw new ArgumentNullException("Package id must be defined");
+            {
+                PMF.InvokePackageMessageEvent("Package id must be defined");
+                return false;
+            }
+
+            PMF.InvokePackageMessageEvent($"Removing {id}");
 
             try
             {
@@ -161,12 +166,16 @@ namespace PMF.Managers
 
             PackageManager.PackageList.Add(remotePackage);
 
-            string errorMsg = "";
             if (error)
-                errorMsg = " with errors. See above";
-
-            PMF.InvokePackageMessageEvent($"Successfully installed {remotePackage.ID}@{asset.Version} {errorMsg}");
-            return PackageState.Installed;
+            {
+                PMF.InvokePackageMessageEvent($"Couldn't install {remotePackage.ID}@{asset.Version}. See above");
+                return PackageState.NotInstalled;
+            }
+            else
+            {
+                PMF.InvokePackageMessageEvent($"Successfully installed {remotePackage.ID}@{asset.Version}");
+                return PackageState.Installed;
+            }
         }
     }
 }

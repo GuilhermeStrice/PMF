@@ -52,7 +52,7 @@ namespace PMF.Managers
                     client.DownloadFile(dependency.Url, Path.Combine(zipPath, dependency.FileName));
                 }
 
-                PMF.InvokePackageMessageEvent("Finished downloading all required files");
+                PMF.InvokePackageMessageEvent("Finished downloading required files");
 
                 return zipPath;
             }

@@ -50,7 +50,7 @@ namespace PMF.Managers
                     message = ex.InnerException.Message;
                 else
                     message = ex.Message;
-                PMF.InvokePackageMessageEvent($"Something failed while cleaning up PMF - \n{message}");
+                PMF.InvokePackageMessageEvent($"Something failed while cleaning up PMF\n{message}");
             }
         }
 
@@ -58,7 +58,7 @@ namespace PMF.Managers
         {
             if (!initialized)
             {
-                PMF.InvokePackageMessageEvent("You must initialize PMF first before using it.\nClosing");
+                PMF.InvokePackageMessageEvent("You must initialize PMF first.\nClosing");
                 Environment.Exit(0);
             }
         }
@@ -74,8 +74,7 @@ namespace PMF.Managers
             checkInitialization();
 
             string zipFile = RemotePackageManager.DownloadAsset(package.ID, asset);
-            LocalPackageManager.InstallPackage(package, asset, zipFile);
-            return PackageState.Installed;
+            return LocalPackageManager.InstallPackage(package, asset, zipFile);
         }
 
         /// <summary>
@@ -92,7 +91,7 @@ namespace PMF.Managers
             checkInitialization();
 
             // check if is already installed
-            if (!LocalPackageManager.IsPackageInstalled(id, false, out Package localPackage, out string packageDirectory))
+            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
             {
                 Package remotePackage = RemotePackageManager.GetPackageInfo(id);
 
@@ -127,7 +126,7 @@ namespace PMF.Managers
             checkInitialization();
 
             // check if is already installed
-            if (!LocalPackageManager.IsPackageInstalled(id, false, out Package localPackage, out string packageDirectory))
+            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
             {
                 // get package info for version
                 Package remotePackage = RemotePackageManager.GetPackageInfo(id);
@@ -163,7 +162,7 @@ namespace PMF.Managers
             checkInitialization();
 
             // check if is already installed
-            if (!LocalPackageManager.IsPackageInstalled(id, false, out Package localPackage, out string packageDirectory))
+            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
             {
                 Package remotePackage = RemotePackageManager.GetPackageInfo(id);
 
@@ -210,7 +209,7 @@ namespace PMF.Managers
             checkInitialization();
 
             // check if is already installed
-            if (LocalPackageManager.IsPackageInstalled(id, true, out Package localPackage, out string packageDirectory))
+            if (LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
             {
                 var remotePackage = RemotePackageManager.GetPackageInfo(id);
 
@@ -246,7 +245,7 @@ namespace PMF.Managers
             checkInitialization();
 
             // check if is already installed
-            if (LocalPackageManager.IsPackageInstalled(id, true, out Package localPackage, out string packageDirectory))
+            if (LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string packageDirectory))
             {
                 // Up to date
                 if (localPackage.Assets[0].Version == version)
@@ -286,7 +285,7 @@ namespace PMF.Managers
 
             checkInitialization();
 
-            if (!LocalPackageManager.IsPackageInstalled(id, true, out Package localPackage, out string pd))
+            if (!LocalPackageManager.IsPackageInstalled(id, out Package localPackage, out string pd))
             {
                 PMF.InvokePackageMessageEvent("Already up to date");
                 return PackageState.NotInstalled;
